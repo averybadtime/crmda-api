@@ -10,13 +10,9 @@ api.post("/customers/update-customers", multipart(), customersController.updateC
 api.post("/garages/write-massive", multipart(), customersController.writeMassiveGarages)
 api.get("/customers/fill-data-clients",  customersController.fillDataClients)
 
-// api.get("/customers/test", function(req,res){
-//   var d = new Date('12/09/2017') // Esta fecha es correcta
-//   console.log(d);
-//   var d = new Date('13/09/2017') // esta fecha es invalida
-//   console.log(d);
-//   res.send('APi')
-// })
+api.get("/customers/test", function(req,res){  
+  res.send('APi OK')
+})
 
 api.post("/customers/telesign", customersController.telesign)
 
