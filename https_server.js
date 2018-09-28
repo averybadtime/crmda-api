@@ -18,10 +18,10 @@ app.use(bodyParser.json({ limit: "50mb" }))
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
 
 
-app.use((req, res) => {
-  res.writeHead(200);
-  res.end("hello sollers\n");
-});
+// app.use((req, res) => {
+//   res.writeHead(200);
+//   res.end("hello sollers\n");
+// });
 
 
 app.use("/api", customersRoutes)
