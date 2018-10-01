@@ -19,7 +19,7 @@ function getObjectByRTMLocation(req, res) {
 				const arrayData = groupArray(array, "location", "rtm")
 				return res.status(200).json({ results: arrayData })
 			}
-			res.status(200).json({ results: [] })
+			res.status(200).json({ results: null })
 		})
 		.catch(err => {
 			console.error(err)
@@ -42,7 +42,7 @@ function getObjectByLocation(req, res) {
 				const arrayData = groupArray(array, "location")
 				return res.status(200).json({ results: arrayData })
 			}
-			res.status(200).json({ results: [] })
+			res.status(200).json({ results: null })
 		})
 		.catch(err => {
 			console.error(err)
@@ -66,7 +66,7 @@ function getRTMPerdidas(req, res) {
 				const arrayData = groupArray(array, "accion")
 				return res.status(200).json({ results: arrayData })
 			}
-			res.status(200).json({ results: [] })
+			res.status(200).json({ results: null })
 		})
 		.catch(err => {
 			console.error(err)
