@@ -86,7 +86,7 @@ function getObjectByRTMLocation(req, res) {
 		const end2017 = req.body.end2017
 		
 
-		customersRef.orderByChild('fechaRtm2017Unix')
+		customersRef.orderByChild('fechaRtmBDUnix')
 			.startAt(start2017)
 			.endAt(end2017)
 			.once('value')
@@ -103,7 +103,7 @@ function getObjectByRTMLocation(req, res) {
 					for (const key in ObjArray){
 						ObjectByRtmLocation2018_2[key].rtm2017 =  ObjArray[key].length
 
-						console.log('fechaRtm2017Unix',key, ObjectByRtmLocation2018_2[key]);
+						console.log('fechaRtmBDUnix',key, ObjectByRtmLocation2018_2[key]);
 					}	
 
 				}

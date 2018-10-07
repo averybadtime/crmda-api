@@ -27,6 +27,6 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
 app.use("/api", customersRoutes)
 
 
-app.listen(4000);
+app.listen(7000);
 
-https.createServer(options, app).listen(4001);
+https.createServer(options, app).listen(7001);
