@@ -1,4 +1,7 @@
 /node_modules/
 serviceAccount.json
 serviceAccountDEV.json
+serviceAccountBK.json
 /ssl/
+firebase.js
+firebaseBK.js

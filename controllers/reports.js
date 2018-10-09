@@ -27,7 +27,7 @@ const customersRef = admin.database().ref("/customers")
 // 		})
 // }
 
-function getObjectByRTMLocation(req, res) {
+async function  getObjectByRTMLocation(req, res) {
 	const start = req.body.start
 	const end = req.body.end
 
@@ -37,8 +37,8 @@ function getObjectByRTMLocation(req, res) {
 
 	console.log('getObjectByRTMLocation',start,end);
 	
-
-	customersRef.orderByChild("fechaRtm2018Unix")
+	
+	const result2018 = await customersRef.orderByChild("fechaRtm2018Unix")
 		.startAt(start)
 		.endAt(end)
 		.once("value")
@@ -47,13 +47,15 @@ function getObjectByRTMLocation(req, res) {
 			if (data !== null) {
 				const array = Object.values(snapshot.val())
 				const arrayData = groupArray(array, "location", "rtm")
-
+				
 
 				let arrayObj = {}
 
+					
+
 				for(const key in arrayData){
-					const rtm2018 = arrayData[key].customer_exist.length
-					const rtmNuevas = arrayData[key].customer_new.length										
+					const rtm2018 =  arrayData[key].customer_exist ? arrayData[key].customer_exist.length : 0
+					const rtmNuevas = arrayData[key].customer_new ? arrayData[key].customer_new.length	: 0									
 					const rtm2017 = 0
 
 					arrayObj[key] = {rtm2017, rtm2018, rtmNuevas}
@@ -61,14 +63,9 @@ function getObjectByRTMLocation(req, res) {
 
 				ObjectByRtmLocation2018_2 = arrayObj
 
-				//console.log(ObjectByRtmLocation2018_2);								
+				console.log('p',arrayObj);								
 
-				dataSet = [
-					arrayObj['diagnostiautos'].rtm2018,
-					arrayObj['la_paz'].rtm2018,
-					arrayObj['revimoto_1a'].rtm2018,
-					arrayObj['supermotos'].rtm2018
-				]
+			
 
 				
 
@@ -86,7 +83,9 @@ function getObjectByRTMLocation(req, res) {
 		const end2017 = req.body.end2017
 		
 
-		customersRef.orderByChild('fechaRtmBDUnix')
+	
+
+		const resultLastYear = await	customersRef.orderByChild('fechaRtmBDUnix')
 			.startAt(start2017)
 			.endAt(end2017)
 			.once('value')
@@ -101,15 +100,42 @@ function getObjectByRTMLocation(req, res) {
 					let ObjArray = groupArray(array, 'location')	
 
 					for (const key in ObjArray){
-						ObjectByRtmLocation2018_2[key].rtm2017 =  ObjArray[key].length
 
+						if(!ObjectByRtmLocation2018_2[key]){
+							console.log('Creamos el rtm2017');
+							
+							ObjectByRtmLocation2018_2[key] = {rtm2017:0, rtm2018:0, rtmNuevas:0}
+						}
 						console.log('fechaRtmBDUnix',key, ObjectByRtmLocation2018_2[key]);
+
+						ObjectByRtmLocation2018_2[key].rtm2017 =  ObjArray[key].length
+						
+
+						dataSet.push(ObjectByRtmLocation2018_2[key].rtm2018)
+
+
+						console.log('object2',ObjectByRtmLocation2018_2);
+						
+
+						// dataSet = [
+						// 	arrayObj['diagnostiautos'].rtm2018,
+						// 	arrayObj['la_paz'].rtm2018,
+						// 	arrayObj['revimoto_1a'].rtm2018,
+						// 	arrayObj['supermotos'].rtm2018
+						// ]
+					
 					}	
 
 				}
+
+				console.log(dataSet);
+				
 				return res.status(200).json({ results: ObjectByRtmLocation2018_2, dataSet })
 				//res.status(200).json({ results: null })
 		})	
+			
+	
+		
 
 
 }

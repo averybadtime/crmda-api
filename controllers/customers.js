@@ -240,10 +240,16 @@ async function updateCustomers(req, res) {
 
               if (x[0] != '') {
                 jsDate = moment(x[0], 'DD/MM/YYYY')
+                console.log(1,jsDate);
+                
                 jsDateUnix = jsDate.unix()
-                jsDateVencimiento =  jsDate.add(1,'y')
+                jsDateVencimiento =  moment(x[0], 'DD/MM/YYYY').add(1,'y')
                 jsDateVencimientoUnix = jsDateVencimiento.unix()
+                console.log(2,jsDate);
+                
               }
+
+
 
               var now
               var telefonos = [] 
@@ -262,13 +268,16 @@ async function updateCustomers(req, res) {
                   typeRtm = 'customer_exist'
                   statusCode = 'post_venta'
 
-                  if (Customer.rtm != typeRtm) {
-                    typeRtm = 'customer_new'
-                    countNews++
-                  } else {
-                    typeRtm = 'customer_exist'
-                    countUpdated++
-                  }
+                  countUpdated++
+                  typeRtm = 'customer_exist'
+
+                  // if (Customer.rtm != typeRtm) {
+                  //   typeRtm = 'customer_new'
+                  //   countNews++
+                  // } else {
+                  //   typeRtm = 'customer_exist'
+                  //   countUpdated++
+                  // }
 
                   // if(fechaRtmUnix > fechaRtmBDUnix){
                   //     statusCode = 'post_venta'
@@ -402,6 +411,8 @@ async function updateCustomers(req, res) {
                   //checkCustomerKey:checkCustomerKey   
                 // }
                 //admin.database().ref("/logsChecksCustomers/" + logsChecksCustomersKey).set(newLogsChecksCustomers)
+                console.log(nCustomer);
+                
                 admin.database().ref("/customers/" + x[2]).update(nCustomer)
               })
               .catch(err => res.status(500).json({ error: err }))
