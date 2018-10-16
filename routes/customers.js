@@ -3,6 +3,7 @@ var express = require("express")
 var customersController = require("../controllers/customers") 
 var reportsRoutes = require("../controllers/reports")
 var userController = require("../controllers/user")
+var garagesController = require("../controllers/garages") 
 
 var multipart = require("connect-multiparty")  
 
@@ -18,7 +19,7 @@ api.post("/customers/validate-before-write", multipart(), customersController.va
 
 api.post("/customers/update-customers", multipart(), customersController.updateCustomers)
 
-api.post("/garages/write-massive", multipart(), customersController.writeMassiveGarages)
+
 
 api.get("/customers/fill-data-clients",  customersController.fillDataClients)
 
@@ -32,6 +33,12 @@ api.get("/customers/test", function(req,res){
 
 api.post("/customers/telesign", customersController.telesign)
 api.get("/customers/postventas", customersController.postVenta)
+
+//Garages
+api.post("/garages/write-massive", multipart(), garagesController.writeMassiveGarages)
+api.post("/garages/update-garages", multipart(), garagesController.updateGarages)
+api.get("/garages/test-garages", multipart(), garagesController.testGarages)
+
 
 
 //Reports
