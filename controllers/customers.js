@@ -1,18 +1,9 @@
 var admin = require("../firebase")
-
 var moment = require("moment")
-
 var papaparse = require("papaparse")
-
 var fs = require("fs")
-
 var groupArray = require('group-array')
-
-
-
 var Validator = require("fastest-validator")
-
-
 
 async function writeMassive(req, res) {
 
@@ -222,10 +213,7 @@ async function writeMassive(req, res) {
     return res.status(500).json({ error: ex })
 
   }
-
 }
-
-
 
 async function validate(req, res) {
 
@@ -380,10 +368,7 @@ async function validate(req, res) {
     return res.status(500).json({ error: ex })
 
   }
-
 }
-
-
 
 async function updateCustomers(req, res) {
 
@@ -885,12 +870,7 @@ async function updateCustomers(req, res) {
     return res.status(500).json({ error: ex })
 
   }
-
 }
-
-
-
-
 
 async function fillDataClients(req, res) {
 
@@ -992,17 +972,9 @@ async function fillDataClients(req, res) {
     return res.status(500).json({ error: ex })
 
   }
-
 }
 
-
-
 async function postVenta(req,res){
-
-  console.log('ok');
-
-
-
   admin.database().ref("/customers").orderByChild('statusCode').equalTo('post_venta').once('value',logCheckSnapshot=>{
 
     logCheckSnapshot.forEach((snap)=>{
@@ -1042,10 +1014,7 @@ async function postVenta(req,res){
   })
 
   res.send('Post Ventas Log')
-
 }
-
-
 
 function telesign(req, res) {
 
@@ -1116,9 +1085,27 @@ function telesign(req, res) {
   }
 
   client.sms.message(messageCallback, phoneNumber, message, messageType);
-
 }
 
+function getInactivos(req, res) {
+  let start = req.query.start
+  let end = req.query.end
 
+  admin.database().ref("/customers")
+    .orderByChild("fechaRtmVencidaUnix")
+    .startAt(start)
+    .endAt(end)
+    .once("value")
+    .then(snapshot => {
+      let data = []
+      snapshot.forEach(child => {
+        data.push({ key: child.key, value: child.val() })
+      })
+      res.status(200).send({ customers: JSON.stringify(data) })
+    })
+    .catch(err => {
+      console.error(err)
+    })
+}
 
-module.exports = { writeMassive, validate, updateCustomers, fillDataClients, postVenta, telesign }
+module.exports = { writeMassive, validate, updateCustomers, fillDataClients, postVenta, telesign, getInactivos }
