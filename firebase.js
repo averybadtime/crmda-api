@@ -14,7 +14,7 @@ var serviceAccount = require("./serviceAccount.json")
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
-	databaseURL: "https://crm-diagnostiautos.firebaseio.com/"
+	databaseURL: "https://dev-crmd.firebaseio.com"
 })
 
 

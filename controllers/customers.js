@@ -1091,6 +1091,11 @@ function getInactivos(req, res) {
   let start = req.query.start
   let end = req.query.end
 
+  //console.log(moment().unix(start).format('DD/MM/YYYY'));
+  
+  console.log(start, end);
+  
+
   admin.database().ref("/customers")
     .orderByChild("fechaRtmVencidaUnix")
     .startAt(start)
@@ -1100,6 +1105,9 @@ function getInactivos(req, res) {
       let data = []
       snapshot.forEach(child => {
         data.push({ key: child.key, value: child.val() })
+
+        console.log(child.val());
+        
       })
       res.status(200).send({ customers: JSON.stringify(data) })
     })
