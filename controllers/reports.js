@@ -22,7 +22,11 @@ async function getObjectByRTMLocation(req, res) {
 							
 							
 							for (let sourceKey in arrayDataSource[locationKey]){
-								ObjectByRtmLocationSource[locationKey][sourceKey] = arrayDataSource[locationKey][sourceKey].length
+                                if(arrayDataSource[locationKey][sourceKey]){
+                                    ObjectByRtmLocationSource[locationKey][sourceKey] = arrayDataSource[locationKey][sourceKey].length
+                                }else{
+                                    ObjectByRtmLocationSource[locationKey][sourceKey] = 0
+                                }
 								//console.log(locationKey,sourceKey,arrayDataSource[locationKey][sourceKey].length);
 								
 							}
