@@ -3,11 +3,7 @@ var moment = require("moment")
 var papaparse = require("papaparse")
 var fs = require("fs")
 var groupArray = require('group-array')
-var Validator = require("fastest-validator")
-
-
-
-
+var validator = require("./validator")
 
 async function writeMassive(req, res) {
   try {
@@ -368,12 +364,6 @@ async function updateCustomers(req, res) {
       })
   }
 }
-
-
-
-
-
-
 async function fillDataClients(req, res) {
 
   try {
@@ -475,7 +465,6 @@ async function fillDataClients(req, res) {
 
   }
 }
-
 async function postVenta(req,res){
   admin.database().ref("/customers").orderByChild('statusCode').equalTo('post_venta').once('value',logCheckSnapshot=>{
 
@@ -517,7 +506,6 @@ async function postVenta(req,res){
 
   res.send('Post Ventas Log')
 }
-
 function telesign(req, res) {
 
   var TeleSignSDK = require('telesignsdk')
@@ -588,7 +576,6 @@ function telesign(req, res) {
 
   client.sms.message(messageCallback, phoneNumber, message, messageType);
 }
-
 function getInactivos(req, res) {
   let start = req.query.start
   let end = req.query.end
@@ -600,8 +587,8 @@ function getInactivos(req, res) {
 
   admin.database().ref("/customers")
     .orderByChild("fechaRtmVencidaUnix")
-    .startAt(start)
-    .endAt(end)
+    .startAt(end)
+    .endAt(start)
     .once("value")
     .then(snapshot => {
       let data = []
@@ -617,5 +604,13 @@ function getInactivos(req, res) {
       console.error(err)
     })
 }
+async function validateData(req, res) {
+	try {
+		const resp = await validator.validate(req.files.csvFile)
+		res.send(resp)
+	} catch (ex) {
+		res.status(500).send({ data: "Ha ocurrido un error en el servidor al validar el archivo." })
+	}
+}
 
-module.exports = { writeMassive, validate, updateCustomers, fillDataClients, postVenta, telesign, getInactivos }
+module.exports = { writeMassive, validate, updateCustomers, fillDataClients, postVenta, telesign, getInactivos, validateData }

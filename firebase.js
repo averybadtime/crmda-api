@@ -1,5 +1,5 @@
 var admin = require("firebase-admin")
-var serviceAccount = require("./serviceAccount.json")
+var serviceAccount = require("./serviceAccountDEV.json")
 
 
 // var configDEV = {

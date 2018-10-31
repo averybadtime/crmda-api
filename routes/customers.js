@@ -11,6 +11,7 @@ api.post("/customers/validate-before-write", multipart(), customersController.va
 api.post("/customers/update-customers", multipart(), customersController.updateCustomers)
 api.get("/customers/fill-data-clients",  customersController.fillDataClients)
 api.get("/customers/inactivos",  customersController.getInactivos)
+api.post("/customers/validate-data",  customersController.validateData)
 api.get("/customers/test", function(req,res){  
   res.send('APi OK ok')
 })
