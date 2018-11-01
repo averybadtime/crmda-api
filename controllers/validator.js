@@ -1,34 +1,29 @@
 const papaparse = require("papaparse")
 const fs = require("fs")
 const moment = require("moment")
-
 const patterns = {
 	nombre: new RegExp("^[a-zA-ZÑñ]+(([',. -][a-zA-Z ])?[a-zA-ZÑñ]*)*$"),
 	alfabetico: new RegExp("^[a-zA-Z\s]*$"),
 	alfanumerico: new RegExp("^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$"),
 	numerico: new RegExp("^[0-9]*$")
 }
-
 async function validate(file) {
 	try {
 		const c = await fs.readFileSync(file.path, "latin1")
 		const  { data } = papaparse.parse(c, {
 			complete: result => result
 		})
-
 		let response = {
 			approved: 0,
 			rejected: 0,
 			warnings: [],
 			errors: []
 		}
-
 		for (let i in data) {
 			let phones = 0
 			let names = 0
 			let rowWarnings = {}
 			let rowErrors = {}
-
 			// Fecha RTM
 			const fecha = data[i][0]
 			if (fecha !== "") {
@@ -38,7 +33,6 @@ async function validate(file) {
 			} else {
 				rowWarnings["fechaRtm"] = "No se especificó FECHA RTM."
 			}
-
 			// Nombre
 			const nombre = data[i][1]
 			if (nombre === "") {
@@ -46,7 +40,6 @@ async function validate(file) {
 			} else {
 				names++
 			}
-
 			// Placa
 			const placa = data[i][2]
 			if (placa !== "") {
@@ -60,7 +53,6 @@ async function validate(file) {
 			} else {
 				rowErrors["placa"] = "No se especificó PLACA."
 			}
-
 			// Certificado
 			const certificado = data[i][3]
 			if (certificado !== "") {
@@ -76,24 +68,20 @@ async function validate(file) {
 			} else {
 				response.rejected++
 			}
-
 			// Cédula
 			const cedula = data[i][4]
 			if (cedula !== "") {
 				if (patterns.numerico.test(cedula) === false) {
 					rowErrors["cedula"] = "La cédula especificada no es válida."
 				} else {
-					if (cedula.length > 10) {
-						rowErrors["cedula"] = "La cédula debe contener máximo 10 caracteres."
+					if (cedula.length > 15) {
+						rowErrors["cedula"] = "La cédula debe contener máximo 15 caracteres."
 					}
 				}
 			} else {
 				rowErrors["cedula"] = "No se especificó CEDULA."
 			}
-
 			// Dirección
-
-
 			// Celular
 			const celular = data[i][6]
 			if (celular !== "") {
@@ -112,7 +100,6 @@ async function validate(file) {
 					}
 				}
 			}
-
 			// Marca
 			const marca = data[i][7]
 			if (marca !== "") {
@@ -122,17 +109,15 @@ async function validate(file) {
 			} else {
 				rowWarnings["marca"] = "No se especificó MARCA."
 			}
-
 			// Linea
 			const linea = data[i][8]
 			if (linea !== "") {
-				if (patterns.alfanumerico.test(linea) === false) {
-					rowErrors["linea"] = "La linea no debe contener caracteres especiales."
-				}
+				// if (patterns.alfanumerico.test(linea) === false) {
+				// 	rowErrors["linea"] = "La linea no debe contener caracteres especiales."
+				// }
 			} else {
 				rowWarnings["linea"] = "No se especificó LINEA."
 			}
-
 			// Tipo de servicio
 			const tipoServicio = data[i][9]
 			if (tipoServicio !== "") {
@@ -142,7 +127,6 @@ async function validate(file) {
 			} else {
 				rowWarnings["tipoServicio"] = "No se especificó TIPO DE SERVICIO."
 			}
-
 			// Tipo de vehículo
 			const tipoVehiculo = data[i][10]
 			if (tipoVehiculo !== "") {
@@ -152,7 +136,6 @@ async function validate(file) {
 			} else {
 				rowWarnings["tipoVehiculo"] = "No se especificó TIPO DE VEHÍCULO."
 			}
-
 			// Modelo
 			const modelo = data[i][11]
 			if (modelo !== "") {
@@ -171,7 +154,6 @@ async function validate(file) {
 			} else {
 				rowWarnings["modelo"] = "No se especificó MODELO."
 			}
-
 			// Telefono fijo
 			const telefonoFijo = data[i][12]
 			if (telefonoFijo !== "") {
@@ -185,7 +167,6 @@ async function validate(file) {
 					}
 				}
 			}
-
 			// Poseedor
 			const nombrePoseedor = data[i][1]
 			if (nombrePoseedor === "") {
@@ -193,7 +174,6 @@ async function validate(file) {
 			} else {
 				names++
 			}
-
 			// Celular del poseedor
 			const celularPoseedor = data[i][14]
 			if (celularPoseedor !== "") {
@@ -207,27 +187,22 @@ async function validate(file) {
 					}
 				}
 			}
-
 			if (phones === 0) {
 				rowErrors["noRegistraTelefono"] = "No registró al menos un número de teléfono."
 			}
-
 			if (names === 0) {
 				rowErrors["noRegistraNombre"] = "No registró al menos un nombre."
 			}
-
 			const rowNumber = +i+1
 			const fila = `Fila-${ rowNumber }`
 			if (Object.keys(rowWarnings).length > 0) response.warnings.push({ fila, warnings: rowWarnings })
 			if (Object.keys(rowErrors).length > 0) response.errors.push({ fila, errors: rowErrors })
 		}
-
 		return response
 	} catch (ex) {
 		res.status(500).send({ error: "Ocurrió un error al validar el archivo en el servidor, intente de nuevo en unos momentos." })
 	}
 }
-
 module.exports = {
 	validate
 }

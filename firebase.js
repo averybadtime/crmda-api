@@ -1,5 +1,5 @@
 var admin = require("firebase-admin")
-var serviceAccount = require("./serviceAccountDEV.json")
+var serviceAccount = require("./serviceAccount.json")
 
 
 // var configDEV = {
@@ -11,15 +11,15 @@ var serviceAccount = require("./serviceAccountDEV.json")
 //     messagingSenderId: "802603183094"
 // };
 
-admin.initializeApp({
-	credential: admin.credential.cert(serviceAccount),
-	databaseURL: "https://dev-crmd.firebaseio.com"
-})
-
 // admin.initializeApp({
 // 	credential: admin.credential.cert(serviceAccount),
-// 	databaseURL: "https://crm-diagnostiautos.firebaseio.com/"
+// 	databaseURL: "https://dev-crmd.firebaseio.com"
 // })
+
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount),
+	databaseURL: "https://crm-diagnostiautos.firebaseio.com/"
+})
 
 //https://crm-diagnostiautos.firebaseio.com/
 //https://dev-crmd.firebaseio.com
