@@ -11,13 +11,10 @@ var serviceAccount = require("./serviceAccountDEV.json")
 //     messagingSenderId: "802603183094"
 // };
 
-
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
 	databaseURL: "https://dev-crmd.firebaseio.com"
 })
-
-
 
 // admin.initializeApp({
 // 	credential: admin.credential.cert(serviceAccount),

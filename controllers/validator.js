@@ -25,6 +25,7 @@ async function validate(file) {
 
 		for (let i in data) {
 			let phones = 0
+			let names = 0
 			let rowWarnings = {}
 			let rowErrors = {}
 
@@ -42,6 +43,8 @@ async function validate(file) {
 			const nombre = data[i][1]
 			if (nombre === "") {
 				rowErrors["nombreCliente"] = "No se especificó NOMBRE CLIENTE."
+			} else {
+				names++
 			}
 
 			// Placa
@@ -133,8 +136,8 @@ async function validate(file) {
 			// Tipo de servicio
 			const tipoServicio = data[i][9]
 			if (tipoServicio !== "") {
-				if (patterns.alfabetico.test(tipoServicio) === false) {
-					rowWarnings["tipoServicio"] = "El tipo de servicio no puede contener números."
+				if (patterns.alfanumerico.test(tipoServicio) === false) {
+					rowWarnings["tipoServicio"] = "El tipo de servicio no puede contener caracteres especiales."
 				}
 			} else {
 				rowWarnings["tipoServicio"] = "No se especificó TIPO DE SERVICIO."
@@ -187,6 +190,8 @@ async function validate(file) {
 			const nombrePoseedor = data[i][1]
 			if (nombrePoseedor === "") {
 				rowErrors["nombrePoseedor"] = "No se especificó NOMBRE DEL POSEEDOR."
+			} else {
+				names++
 			}
 
 			// Celular del poseedor
@@ -195,32 +200,31 @@ async function validate(file) {
 				if (patterns.numerico.test(celularPoseedor) === false) {
 					rowErrors["celularPoseedor"] = "El número de celular del poseedor especificado no es válido."
 				} else {
-					if (celularPoseedor.length !== 10) {
-						rowErrors["celularPoseedor"] = "El número de celular del poseedor debe contener 10 dígitos"
+					if (celularPoseedor.length < 7 || celularPoseedor.length > 10) {
+						rowErrors["celularPoseedor"] = "El número de celular del poseedor especificado no es válido."
 					} else {
-						const celularPoseedorInt = parseInt(celularPoseedor)
-						if (celularPoseedorInt < 3000000000 || celularPoseedorInt > 3999999999) {
-							rowErrors["celularPoseedor"] = "El número de celular del poseedor especificado no es válido."
-						} else {
-							phones++
-						}
+						phones++
 					}
 				}
 			}
 
 			if (phones === 0) {
-				rowErrors["noRegistraTelefono"] = "No registró un número de teléfono."
+				rowErrors["noRegistraTelefono"] = "No registró al menos un número de teléfono."
+			}
+
+			if (names === 0) {
+				rowErrors["noRegistraNombre"] = "No registró al menos un nombre."
 			}
 
 			const rowNumber = +i+1
 			const fila = `Fila-${ rowNumber }`
-			if (Object.keys(rowWarnings).length > 0) response.warnings.push({ [fila]: rowWarnings })
-			if (Object.keys(rowErrors).length > 0) response.errors.push({ [fila]: rowErrors })
+			if (Object.keys(rowWarnings).length > 0) response.warnings.push({ fila, warnings: rowWarnings })
+			if (Object.keys(rowErrors).length > 0) response.errors.push({ fila, errors: rowErrors })
 		}
 
 		return response
 	} catch (ex) {
-		console.log(ex)
+		res.status(500).send({ error: "Ocurrió un error al validar el archivo en el servidor, intente de nuevo en unos momentos." })
 	}
 }
 
